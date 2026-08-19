@@ -8,6 +8,8 @@ Format: `## [x.y.z] — YYYY-MM-DD` with `### Added / Changed / Fixed` subsectio
 ### Added
 - REST/client notes at `doc/api.md`
 - Service overview restored at `doc/README.md`
+- Fix Cucumber `cn()` import path (`../../../lib/utils`) so `test:component` compiles
+- Load Cucumber steps as CommonJS via ts-node so Node can resolve `lib/utils`
 
 ## [0.2.2] — 2026-08-19
 

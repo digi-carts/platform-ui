@@ -3,6 +3,12 @@
 All notable changes to platform-ui are documented here.
 Format: `## [x.y.z] — YYYY-MM-DD` with `### Added / Changed / Fixed` subsections.
 
+## [0.2.3] — 2026-08-19
+
+### Added
+- REST/client notes at `doc/api.md`
+- Service overview restored at `doc/README.md`
+
 ## [0.2.2] — 2026-08-19
 
 ### Added

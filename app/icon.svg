@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#0a0a0a"/>
+  <!-- Crown shape — super admin -->
+  <polygon points="96,340 96,200 176,270 256,140 336,270 416,200 416,340" fill="none" stroke="white" stroke-width="36" stroke-linejoin="round" stroke-linecap="round"/>
+  <rect x="96" y="340" width="320" height="36" rx="18" fill="white"/>
+</svg>

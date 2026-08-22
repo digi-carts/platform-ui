@@ -23,7 +23,7 @@ jobs:
           push: true
           tags: ${{ env.IMAGE }}-dev:latest
           build-args: |
-            NEXT_PUBLIC_API_URL=${{ secrets.DEV_API_GATEWAY_URL }}
+            NEXT_PUBLIC_API_URL=https://digi-cart-api-gateway-dev-wdbieowaja-ue.a.run.app/api
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Deploy to Cloud Run (dev)

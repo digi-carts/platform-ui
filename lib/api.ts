@@ -38,13 +38,13 @@ api.interceptors.response.use(
             const parsed = JSON.parse(raw);
             parsed.state.accessToken = data.accessToken;
             parsed.state.refreshToken = data.refreshToken;
-            localStorage.setItem('auth-store-v2', JSON.stringify(parsed));
+            localStorage.setItem('auth-store-v3', JSON.stringify(parsed));
           }
         } catch { /* ignore */ }
         original.headers.Authorization = `Bearer ${data.accessToken}`;
         return api(original);
       } catch {
-        localStorage.removeItem('auth-store-v2');
+        localStorage.removeItem('auth-store-v3');
         if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) window.location.href = '/login';
       }
     }

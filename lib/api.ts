@@ -7,7 +7,7 @@ export const api = axios.create({ baseURL: API_BASE });
 function readState() {
   if (typeof window === 'undefined') return {};
   try {
-    const raw = localStorage.getItem('auth-store-v2');
+    const raw = localStorage.getItem('auth-store-v3');
     return raw ? (JSON.parse(raw)?.state ?? {}) : {};
   } catch { return {}; }
 }
@@ -33,7 +33,7 @@ api.interceptors.response.use(
         const { data } = await axios.post(`${API_BASE}/auth/refresh`, { refreshToken });
         // Update persisted state
         try {
-          const raw = localStorage.getItem('auth-store-v2');
+          const raw = localStorage.getItem('auth-store-v3');
           if (raw) {
             const parsed = JSON.parse(raw);
             parsed.state.accessToken = data.accessToken;

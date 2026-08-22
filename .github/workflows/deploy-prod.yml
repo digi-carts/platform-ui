@@ -46,6 +46,8 @@ jobs:
           context: .
           push: true
           tags: ${{ env.IMAGE }}:latest,${{ env.IMAGE }}:${{ needs.release.outputs.version }}
+          build-args: |
+            NEXT_PUBLIC_API_URL=https://digi-cart-api-gateway-samq55ea5q-ue.a.run.app/api
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Deploy to Cloud Run (prod)

@@ -24,6 +24,8 @@ jobs:
           tags: ${{ env.IMAGE }}-dev:latest
           build-args: |
             NEXT_PUBLIC_API_URL=${{ secrets.DEV_API_GATEWAY_URL }}
+          build-args: |
+            NEXT_PUBLIC_API_URL=${{ secrets.DEV_API_GATEWAY_URL }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Deploy to Cloud Run (dev)

@@ -1,6 +1,12 @@
 import axios from 'axios';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+const getApiBase = () => {
+  if (typeof window !== 'undefined') {
+    return (window as any).__API_URL__ || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+  }
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
+};
+const API_BASE = getApiBase();
 
 export const api = axios.create({ baseURL: API_BASE });
 

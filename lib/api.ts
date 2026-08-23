@@ -1,9 +1,14 @@
 import axios from 'axios';
 
-const getBase = () =>
-  (typeof window !== 'undefined' ? (window as any).__API_URL__ : null) ??
-  process.env.NEXT_PUBLIC_API_URL ??
-  'http://localhost:4000/api';
+// Fetch the baked-in URL once at module load; await it in the request interceptor.
+// This avoids all Turbopack NEXT_PUBLIC_* inlining issues and React hydration races.
+const _basePromise: Promise<string> =
+  typeof window !== 'undefined'
+    ? fetch('/api-url.txt')
+        .then((r) => r.text())
+        .then((t) => t.trim() || 'http://localhost:4000/api')
+        .catch(() => process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api')
+    : Promise.resolve(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api');
 
 export const api = axios.create();
 
@@ -15,8 +20,8 @@ function readState() {
   } catch { return {}; }
 }
 
-api.interceptors.request.use((config) => {
-  config.baseURL ??= getBase();
+api.interceptors.request.use(async (config) => {
+  config.baseURL ??= await _basePromise;
   const state = readState();
   if (state.accessToken) config.headers.Authorization = `Bearer ${state.accessToken}`;
   if (state.storeId) config.headers['x-store-id'] = state.storeId;
@@ -34,7 +39,7 @@ api.interceptors.response.use(
       try {
         const { refreshToken } = readState();
         if (!refreshToken) throw new Error('no refresh token');
-        const { data } = await axios.post(`${getBase()}/auth/refresh`, { refreshToken });
+        const { data } = await axios.post(`${await _basePromise}/auth/refresh`, { refreshToken });
         // Update persisted state
         try {
           const raw = localStorage.getItem('auth-store-v3');

@@ -13,20 +13,9 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   return (
     <html lang="en" className={`${geist.variable} h-full antialiased`}>
-      <head>
-        {apiUrl && (
-          // eslint-disable-next-line @next/next/no-sync-scripts
-          <script
-            dangerouslySetInnerHTML={{ __html: `window.__API_URL__=${JSON.stringify(apiUrl)}` }}
-          />
-        )}
-      </head>
-      <body className="min-h-full flex flex-col bg-neutral-50" suppressHydrationWarning>
-        {children}
-      </body>
+      <body className="min-h-full flex flex-col bg-neutral-50">{children}</body>
     </html>
   );
 }

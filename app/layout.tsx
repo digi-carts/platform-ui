@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Script from 'next/script';
 import { Geist } from 'next/font/google';
 import './globals.css';
 
@@ -18,13 +17,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className={`${geist.variable} h-full antialiased`}>
       <head>
-        {apiUrl && (
-          <Script
-            id="api-url"
-            strategy="beforeInteractive"
-            dangerouslySetInnerHTML={{ __html: `window.__API_URL__=${JSON.stringify(apiUrl)}` }}
-          />
-        )}
+        {apiUrl && <meta name="x-api-url" content={apiUrl} />}
       </head>
       <body className="min-h-full flex flex-col bg-neutral-50">{children}</body>
     </html>

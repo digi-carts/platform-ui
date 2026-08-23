@@ -1,14 +1,11 @@
 import axios from 'axios';
 
-const getApiBase = () => {
-  if (typeof window !== 'undefined') {
-    return (window as any).__API_URL__ || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
-  }
-  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api';
-};
-const API_BASE = getApiBase();
+const getBase = () =>
+  (typeof window !== 'undefined' ? (window as any).__API_URL__ : null) ??
+  process.env.NEXT_PUBLIC_API_URL ??
+  'http://localhost:4000/api';
 
-export const api = axios.create({ baseURL: API_BASE });
+export const api = axios.create();
 
 function readState() {
   if (typeof window === 'undefined') return {};
@@ -19,6 +16,7 @@ function readState() {
 }
 
 api.interceptors.request.use((config) => {
+  config.baseURL ??= getBase();
   const state = readState();
   if (state.accessToken) config.headers.Authorization = `Bearer ${state.accessToken}`;
   if (state.storeId) config.headers['x-store-id'] = state.storeId;
@@ -36,7 +34,7 @@ api.interceptors.response.use(
       try {
         const { refreshToken } = readState();
         if (!refreshToken) throw new Error('no refresh token');
-        const { data } = await axios.post(`${API_BASE}/auth/refresh`, { refreshToken });
+        const { data } = await axios.post(`${getBase()}/auth/refresh`, { refreshToken });
         // Update persisted state
         try {
           const raw = localStorage.getItem('auth-store-v3');

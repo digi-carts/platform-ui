@@ -17,9 +17,16 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className={`${geist.variable} h-full antialiased`}>
       <head>
-        {apiUrl && <meta name="x-api-url" content={apiUrl} />}
+        {apiUrl && (
+          // eslint-disable-next-line @next/next/no-sync-scripts
+          <script
+            dangerouslySetInnerHTML={{ __html: `window.__API_URL__=${JSON.stringify(apiUrl)}` }}
+          />
+        )}
       </head>
-      <body className="min-h-full flex flex-col bg-neutral-50">{children}</body>
+      <body className="min-h-full flex flex-col bg-neutral-50" suppressHydrationWarning>
+        {children}
+      </body>
     </html>
   );
 }

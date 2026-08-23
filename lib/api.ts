@@ -1,12 +1,9 @@
 import axios from 'axios';
 
-const getBase = () => {
-  if (typeof document !== 'undefined') {
-    const meta = document.querySelector('meta[name="x-api-url"]');
-    if (meta) return meta.getAttribute('content') ?? 'http://localhost:4000/api';
-  }
-  return process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:4000/api';
-};
+const getBase = () =>
+  (typeof window !== 'undefined' ? (window as any).__API_URL__ : null) ??
+  process.env.NEXT_PUBLIC_API_URL ??
+  'http://localhost:4000/api';
 
 export const api = axios.create();
 

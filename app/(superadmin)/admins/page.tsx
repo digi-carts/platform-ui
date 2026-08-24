@@ -46,7 +46,7 @@ export default function SuperAdminsPage() {
   const [error, setError] = useState('');
 
   const load = useCallback(async () => {
-    const [authRes, platformRes] = await Promise.all([api.get('/auth/admin-mgmt'), api.get('/admin')]);
+    const [authRes, platformRes] = await Promise.all([api.get('/auth/admin-mgmt/superadmins'), api.get('/admin')]);
     const auth: Admin[] = Array.isArray(authRes.data) ? authRes.data : (authRes.data.users || []);
     const platform: PlatformAdmin[] = Array.isArray(platformRes.data) ? platformRes.data : (platformRes.data.admins || []);
     const byEmail = new Map(platform.map(p => [p.email, p]));
@@ -69,7 +69,7 @@ export default function SuperAdminsPage() {
     if (!emailValid || !pwValid) return;
     setLoading(true); setError('');
     try {
-      await api.post('/auth/admin-mgmt', { email: form.email, password: form.password });
+      await api.post('/auth/admin-mgmt/superadmin', { email: form.email, password: form.password });
       setForm({ email: '', password: '' }); close(); await load(); flash('Admin created');
     } catch (err: unknown) { setError((err as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed'); }
     finally { setLoading(false); }
@@ -95,7 +95,7 @@ export default function SuperAdminsPage() {
 
   const del = async (a: AdminRow) => {
     if (!confirm(`Delete ${a.email}?`)) return;
-    await api.delete(`/auth/admin-mgmt/${a.id}`); await load(); flash('Deleted');
+    await api.delete(`/auth/admin-mgmt/superadmin/${a.id}`); await load(); flash('Deleted');
   };
 
   const changePw = async (e: React.SyntheticEvent<HTMLFormElement>) => {

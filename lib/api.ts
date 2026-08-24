@@ -32,8 +32,10 @@ api.interceptors.response.use(
   (r) => r,
   async (error) => {
     const original = error.config;
-    // Never intercept auth endpoints — let the login/register handlers show their own errors
-    if (original?.url?.includes('/auth/')) throw error;
+    // Skip refresh only for unauthenticated auth endpoints (login/register/refresh/social login).
+    // Authenticated /auth/* paths (e.g. change-password) must still go through the refresh flow.
+    const unauthPaths = ['/auth/login', '/auth/register', '/auth/refresh', '/auth/logout', '/auth/google', '/auth/facebook'];
+    if (unauthPaths.some((p) => original?.url?.includes(p))) throw error;
     if (error.response?.status === 401 && !original._retry) {
       original._retry = true;
       try {

@@ -133,9 +133,9 @@ export default function SuperStoresPage() {
 
   const load = useCallback(async () => {
     const [storesRes, adminsRes, platformRes, orderStatsRes] = await Promise.all([
-      api.get('/store/all'),
+      api.get('/stores'),
       api.get('/auth/admin-mgmt'),
-      api.get('/platform/manage'),
+      api.get('/platform/manage').catch(() => ({ data: { admins: [] } })),
       api.get('/orders/stats/by-store').catch(() => ({ data: { stores: [] } })),
     ]);
     const authAdmins: Admin[] = adminsRes.data.users || [];
@@ -143,7 +143,7 @@ export default function SuperStoresPage() {
     const daysByEmail = new Map(platformAdmins.map(p => [p.email, p.daysUntilExpiry ?? p.availableDays ?? 0]));
     const adminEmailMap = new Map(authAdmins.map(a => [a.id, { email: a.email, availableDays: daysByEmail.get(a.email) ?? 0 }]));
     const orderStats = new Map((orderStatsRes.data.stores || []).map((s: { storeId: string; orders: number; revenue: number }) => [s.storeId, s]));
-    const rawStores = (storesRes.data.stores || []) as StoreRow[];
+    const rawStores = (storesRes.data || []) as StoreRow[];
     setStores(rawStores.map(s => ({
       ...s,
       availableDays: adminEmailMap.get(s.adminId)?.availableDays ?? 0,

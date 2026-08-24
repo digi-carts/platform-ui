@@ -71,7 +71,7 @@ export default function SuperAdminsPage() {
     try {
       await api.post('/auth/admin-mgmt', { email: form.email, password: form.password });
       setForm({ email: '', password: '' }); close(); await load(); flash('Admin created');
-    } catch (err: unknown) { setError((err as { response?: { data?: { error?: string } } })?.response?.data?.error || 'Failed'); }
+    } catch (err: unknown) { setError((err as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed'); }
     finally { setLoading(false); }
   };
 
@@ -105,7 +105,7 @@ export default function SuperAdminsPage() {
     try {
       if (modal?.type === 'pw') await api.patch(`/auth/admin-mgmt/${modal.id}/password`, { password: pwForm.newPw });
       close(); flash('Password changed');
-    } catch (err: unknown) { setError((err as { response?: { data?: { error?: string } } })?.response?.data?.error || 'Failed'); }
+    } catch (err: unknown) { setError((err as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed'); }
     finally { setLoading(false); }
   };
 

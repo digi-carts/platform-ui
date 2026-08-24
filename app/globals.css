@@ -150,3 +150,7 @@ nextjs-portal { display: none !important; }
 .dark input:not([type=checkbox]):not([type=radio]) { background-color: oklch(0.22 0 0); color: var(--foreground); }
 .dark textarea { background-color: oklch(0.22 0 0); color: var(--foreground); }
 .dark .divide-y > * + * { border-top-color: oklch(1 0 0 / 8%) !important; }
+
+/* Dark mode table row highlight — muted/50 hover is invisible against dark backgrounds */
+.dark [data-slot="table-row"]:hover { background-color: oklch(0.32 0 0) !important; }
+.dark [data-slot="table-row"][data-state="selected"] { background-color: oklch(0.36 0 0) !important; }

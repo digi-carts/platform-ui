@@ -37,7 +37,7 @@ export default function SuperAdminsPage() {
 
   const load = useCallback(async () => {
     const res = await api.get('/auth/admin-mgmt/superadmins');
-    setAdmins(res.data.users || []);
+    setAdmins(Array.isArray(res.data) ? res.data : (res.data.users || []));
   }, []);
 
   useEffect(() => { load().catch(() => {}); }, [load]);
@@ -59,7 +59,7 @@ export default function SuperAdminsPage() {
       await load();
       flash('Super admin created');
     } catch (err: unknown) {
-      setError((err as { response?: { data?: { error?: string } } })?.response?.data?.error || 'Failed to create');
+      setError((err as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed to create');
     } finally { setLoading(false); }
   };
 
@@ -70,7 +70,7 @@ export default function SuperAdminsPage() {
       await load();
       flash('Deleted');
     } catch (err: unknown) {
-      setError((err as { response?: { data?: { error?: string } } })?.response?.data?.error || 'Failed to delete');
+      setError((err as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed to delete');
     }
   };
 

@@ -36,7 +36,10 @@ api.interceptors.response.use(
     // Authenticated /auth/* paths (e.g. change-password) must still go through the refresh flow.
     const unauthPaths = ['/auth/login', '/auth/register', '/auth/refresh', '/auth/logout', '/auth/google', '/auth/facebook'];
     if (unauthPaths.some((p) => original?.url?.includes(p))) throw error;
-    if (error.response?.status === 401 && !original._retry) {
+    // Only refresh for gateway auth failures (no response body).
+    // Domain 401s (e.g. wrong current password) carry a message body — don't refresh those.
+    const isDomainError = error.response?.data && typeof error.response.data === 'object' && (error.response.data as Record<string, unknown>).message;
+    if (error.response?.status === 401 && !original._retry && !isDomainError) {
       original._retry = true;
       try {
         const { refreshToken } = readState();

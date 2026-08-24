@@ -3,6 +3,21 @@
 All notable changes to platform-ui are documented here.
 Format: `## [x.y.z] — YYYY-MM-DD` with `### Added / Changed / Fixed` subsections.
 
+## [0.2.3] — 2026-08-19
+
+### Added
+- REST/client notes at `doc/api.md`
+- Service overview restored at `doc/README.md`
+- Fix Cucumber `cn()` import path (`../../../lib/utils`) so `test:component` compiles
+- Load Cucumber steps as CommonJS via ts-node so Node can resolve `lib/utils`
+
+## [0.2.2] — 2026-08-19
+
+### Added
+- Cucumber JS component tests (`npm run test:component`)
+- GitHub Actions `pr-tests.yml`: pull requests to `stage`/`main` run component tests and fail the check on failure
+- Dev deploy (`deploy-dev.yml`) runs component tests before Cloud Run update
+
 ## [0.2.1] — 2026-08-18
 
 ### Changed

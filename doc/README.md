@@ -63,3 +63,7 @@ Dockerfile: Node 20, listen **8080**.
 - [notification-service](https://github.com/digi-carts/notification-service/blob/stage/doc/README.md)
 - [payment-service](https://github.com/digi-carts/payment-service/blob/stage/doc/README.md)
 - AI map: [docs/ai/KNOWLEDGE_GRAPH.md](../docs/ai/KNOWLEDGE_GRAPH.md)
+
+## REST API reference
+
+See [api.md](api.md) for every HTTP endpoint generated from Spring controllers.

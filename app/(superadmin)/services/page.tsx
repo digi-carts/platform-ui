@@ -50,8 +50,10 @@ export default function ServicesPage() {
     try {
       const r = await api.get('/platform/services/status');
       setData(r.data);
-    } catch {
-      setError('Failed to fetch service status. Make sure GCP credentials are available.');
+    } catch (err: unknown) {
+      const axiosErr = err as { response?: { data?: { error?: string } }; message?: string };
+      const detail = axiosErr.response?.data?.error ?? axiosErr.message ?? 'Unknown error';
+      setError(`Failed to fetch service status: ${detail}`);
     } finally { setLoading(false); }
   }, []);
 

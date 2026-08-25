@@ -25,8 +25,8 @@ export default function PaymentConfigPage() {
 
   const load = useCallback(async () => {
     try {
-      const r = await api.get('/payment/platform-config');
-      if (r.data.config) setConfig({ ...empty, ...r.data.config });
+      const r = await api.get('/platform-payment-config/global');
+      setConfig({ ...empty, ...r.data });
     } catch { setError('Failed to load config'); }
     finally { setLoading(false); }
   }, []);
@@ -37,7 +37,7 @@ export default function PaymentConfigPage() {
     e.preventDefault();
     setSaving(true); setError('');
     try {
-      await api.put('/payment/platform-config', config);
+      await api.put('/platform-payment-config/global', config);
       setSaved(true);
       setTimeout(() => setSaved(false), 2500);
     } catch { setError('Failed to save'); }

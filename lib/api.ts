@@ -39,7 +39,13 @@ api.interceptors.response.use(
     // Only refresh for gateway auth failures (no response body).
     // Domain 401s (e.g. wrong current password) carry a message body — don't refresh those.
     const isDomainError = error.response?.data && typeof error.response.data === 'object' && (error.response.data as Record<string, unknown>).message;
-    if (error.response?.status === 401 && !original._retry && !isDomainError) {
+    if (error.response?.status === 401 && !isDomainError) {
+      if (original._retry) {
+        // Retry after refresh also got 401 — tokens are broken, force re-login
+        localStorage.removeItem('auth-store-v3');
+        if (typeof window !== 'undefined' && !window.location.pathname.includes('/login')) window.location.href = '/login';
+        throw error;
+      }
       original._retry = true;
       try {
         const { refreshToken } = readState();

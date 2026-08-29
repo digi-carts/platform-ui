@@ -46,7 +46,7 @@ export default function SuperAdminsPage() {
   const [error, setError] = useState('');
 
   const load = useCallback(async () => {
-    const [authRes, platformRes] = await Promise.all([api.get('/auth/admin-mgmt/superadmins'), api.get('/admin')]);
+    const [authRes, platformRes] = await Promise.all([api.get('/auth/admin-mgmt/superadmins'), api.get('/platform/admin')]);
     const auth: Admin[] = Array.isArray(authRes.data) ? authRes.data : (authRes.data.users || []);
     const platform: PlatformAdmin[] = Array.isArray(platformRes.data) ? platformRes.data : (platformRes.data.admins || []);
     const byEmail = new Map(platform.map(p => [p.email, p]));
@@ -84,9 +84,9 @@ export default function SuperAdminsPage() {
         await api.patch(`/auth/admin-mgmt/${a.id}/block`, { blocked: false });
       }
       if (a.platformId) {
-        await api.put(`/admin/${a.platformId}`, { status: newStatus });
+        await api.put(`/platform/admin/${a.platformId}`, { status: newStatus });
       } else {
-        await api.post('/admin', { email: a.email, status: newStatus });
+        await api.post('/platform/admin', { email: a.email, status: newStatus });
       }
       await load();
       flash(`${a.email} ${newStatus === 'ACTIVE' ? 'activated' : 'suspended'}`);

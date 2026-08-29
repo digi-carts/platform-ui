@@ -226,8 +226,8 @@ export default function SqlPage() {
   useEffect(() => {
     api.get('/platform/cleanup/schema')
       .then(r => {
-        const d = r.data as { tree: SchemaTree; pks?: PkMap };
-        setSchema(d.tree);
+        const d = r.data as { tree?: SchemaTree; pks?: PkMap };
+        setSchema(d.tree ?? {});
         setPks(d.pks ?? {});
       })
       .catch(() => {});

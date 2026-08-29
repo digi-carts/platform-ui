@@ -16,7 +16,7 @@ export default function SuperCustomersPage() {
 
   const load = useCallback(async () => {
     const r = await api.get('/auth/admin-mgmt/customers');
-    setCustomers(r.data.users || []);
+    setCustomers(r.data || []);
   }, []);
 
   useEffect(() => { load().catch(() => {}); }, [load]);

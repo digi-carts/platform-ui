@@ -59,7 +59,7 @@ export default function SuperSettingsPage() {
       setPwMsg('Password changed successfully');
       setTimeout(() => setPwMsg(''), 3000);
     } catch (err: unknown) {
-      setPwError((err as { response?: { data?: { error?: string } } })?.response?.data?.error || 'Failed to change password');
+      setPwError((err as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed to change password');
     } finally { setPwLoading(false); }
   };
 

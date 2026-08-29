@@ -64,7 +64,7 @@ function StoreModal({ modal, form, setForm, admins, stores, loading, error, form
                   <div className="space-y-1 col-span-2">
                     <Label>Assign Admin <span className="text-neutral-400 text-xs">(unassigned only)</span></Label>
                     <select value={form.adminId} onChange={e => setForm({ ...form, adminId: e.target.value })} required
-                      className="w-full h-9 rounded-md border border-neutral-200 px-3 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-black">
+                      className="w-full h-9 rounded-md border border-neutral-200 px-3 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-black dark:bg-[oklch(0.22_0_0)] dark:border-[oklch(1_0_0/12%)] dark:text-foreground dark:focus:ring-[oklch(0.75_0_0)]">
                       <option value="">Select admin…</option>
                       {admins.filter(a => !stores.some(s => s.adminId === a.id)).map(a => (
                         <option key={a.id} value={a.id}>{a.email}</option>
@@ -83,7 +83,7 @@ function StoreModal({ modal, form, setForm, admins, stores, loading, error, form
                   <div className="space-y-1 col-span-2">
                     <Label>Assign Admin</Label>
                     <select value={form.adminId} onChange={e => setForm({ ...form, adminId: e.target.value })} required
-                      className="w-full h-9 rounded-md border border-neutral-200 px-3 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-black">
+                      className="w-full h-9 rounded-md border border-neutral-200 px-3 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-black dark:bg-[oklch(0.22_0_0)] dark:border-[oklch(1_0_0/12%)] dark:text-foreground dark:focus:ring-[oklch(0.75_0_0)]">
                       <option value="">Select admin…</option>
                       {admins.map(a => (
                         <option key={a.id} value={a.id}>{a.email}</option>
@@ -133,9 +133,9 @@ export default function SuperStoresPage() {
 
   const load = useCallback(async () => {
     const [storesRes, adminsRes, platformRes, orderStatsRes] = await Promise.all([
-      api.get('/store/all'),
+      api.get('/stores'),
       api.get('/auth/admin-mgmt'),
-      api.get('/platform/manage'),
+      api.get('/platform/manage').catch(() => ({ data: { admins: [] } })),
       api.get('/orders/stats/by-store').catch(() => ({ data: { stores: [] } })),
     ]);
     const authAdmins: Admin[] = adminsRes.data.users || [];
@@ -143,7 +143,7 @@ export default function SuperStoresPage() {
     const daysByEmail = new Map(platformAdmins.map(p => [p.email, p.daysUntilExpiry ?? p.availableDays ?? 0]));
     const adminEmailMap = new Map(authAdmins.map(a => [a.id, { email: a.email, availableDays: daysByEmail.get(a.email) ?? 0 }]));
     const orderStats = new Map((orderStatsRes.data.stores || []).map((s: { storeId: string; orders: number; revenue: number }) => [s.storeId, s]));
-    const rawStores = (storesRes.data.stores || []) as StoreRow[];
+    const rawStores = (storesRes.data || []) as StoreRow[];
     setStores(rawStores.map(s => ({
       ...s,
       availableDays: adminEmailMap.get(s.adminId)?.availableDays ?? 0,
@@ -206,16 +206,16 @@ export default function SuperStoresPage() {
             onClick={() => setShowExpired(v => !v)}
             className="h-8 gap-1.5">
             <AlertTriangle size={13} />
-            Expired {expiredCount > 0 && <span className="ml-0.5 bg-red-100 text-red-700 rounded-full px-1.5 py-0 text-xs font-bold">{expiredCount}</span>}
+            Expired {expiredCount > 0 && <span className="ml-0.5 bg-red-100 text-red-700 rounded-full px-1.5 py-0 text-xs font-bold dark:bg-[oklch(0.25_0.05_15)] dark:text-[oklch(0.72_0.14_15)]">{expiredCount}</span>}
           </Button>
           <Input placeholder="Search stores…" value={search} onChange={e => setSearch(e.target.value)} className="h-8 text-sm w-56" />
           <Button size="sm" onClick={() => { setForm(emptyForm); setModal({ type: 'create' }); setError(''); }}>+ Add Store</Button>
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-xl border bg-white">
+      <div className="overflow-x-auto rounded-xl border bg-white dark:bg-card dark:border-border">
         <table className="w-full text-sm">
-          <thead className="bg-neutral-50 border-b">
+          <thead className="bg-neutral-50 border-b dark:bg-[oklch(0.18_0_0)] dark:border-border">
             <tr>
               <th className="text-left px-4 py-3 font-medium text-neutral-500">Store Name</th>
               <th className="text-left px-4 py-3 font-medium text-neutral-500">Store ID</th>
@@ -238,12 +238,12 @@ export default function SuperStoresPage() {
               const adminEmail = admins.find(a => a.id === s.adminId)?.email || s.adminId.slice(0, 8) + '…';
               const expired = s.availableDays <= 0;
               return (
-                <tr key={s.id} className={expired ? 'bg-red-50 hover:bg-red-100/60' : 'hover:bg-neutral-50/50'}>
+                <tr key={s.id} className={expired ? 'bg-red-50 hover:bg-red-100/60 dark:bg-[oklch(0.22_0.04_15)] dark:hover:bg-[oklch(0.26_0.04_15)]' : 'hover:bg-neutral-50/50 dark:hover:bg-[oklch(0.22_0_0)]'}>
                   <td className="px-4 py-3 font-medium">{s.name}</td>
                   <td className="px-4 py-3 text-xs font-mono text-neutral-500">{s.subdomain}</td>
                   <td className="px-4 py-3">
                     <a href={`${STOREFRONT_BASE}/s/${s.subdomain}`} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-1 text-indigo-600 hover:underline text-xs">
+                      className="flex items-center gap-1 text-indigo-600 dark:text-indigo-400 hover:underline text-xs">
                       View <ExternalLink size={11} />
                     </a>
                   </td>

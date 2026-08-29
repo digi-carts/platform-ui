@@ -46,9 +46,9 @@ export default function SuperAdminsPage() {
   const [error, setError] = useState('');
 
   const load = useCallback(async () => {
-    const [authRes, platformRes] = await Promise.all([api.get('/auth/admin-mgmt'), api.get('/platform/admins')]);
-    const auth: Admin[] = authRes.data.users || [];
-    const platform: PlatformAdmin[] = platformRes.data.admins || [];
+    const [authRes, platformRes] = await Promise.all([api.get('/auth/admin-mgmt/superadmins'), api.get('/platform/admin')]);
+    const auth: Admin[] = Array.isArray(authRes.data) ? authRes.data : (authRes.data.users || []);
+    const platform: PlatformAdmin[] = Array.isArray(platformRes.data) ? platformRes.data : (platformRes.data.admins || []);
     const byEmail = new Map(platform.map(p => [p.email, p]));
     setAdmins(auth.map(u => ({
       ...u,
@@ -69,9 +69,9 @@ export default function SuperAdminsPage() {
     if (!emailValid || !pwValid) return;
     setLoading(true); setError('');
     try {
-      await api.post('/auth/admin-mgmt', { email: form.email, password: form.password });
+      await api.post('/auth/admin-mgmt/superadmin', { email: form.email, password: form.password });
       setForm({ email: '', password: '' }); close(); await load(); flash('Admin created');
-    } catch (err: unknown) { setError((err as { response?: { data?: { error?: string } } })?.response?.data?.error || 'Failed'); }
+    } catch (err: unknown) { setError((err as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed'); }
     finally { setLoading(false); }
   };
 
@@ -84,9 +84,9 @@ export default function SuperAdminsPage() {
         await api.patch(`/auth/admin-mgmt/${a.id}/block`, { blocked: false });
       }
       if (a.platformId) {
-        await api.patch(`/platform/admins/${a.platformId}/status`, { status: newStatus });
+        await api.put(`/platform/admin/${a.platformId}`, { status: newStatus });
       } else {
-        await api.post('/platform/admins/upsert-status', { email: a.email, status: newStatus });
+        await api.post('/platform/admin', { email: a.email, status: newStatus });
       }
       await load();
       flash(`${a.email} ${newStatus === 'ACTIVE' ? 'activated' : 'suspended'}`);
@@ -95,7 +95,7 @@ export default function SuperAdminsPage() {
 
   const del = async (a: AdminRow) => {
     if (!confirm(`Delete ${a.email}?`)) return;
-    await api.delete(`/auth/admin-mgmt/${a.id}`); await load(); flash('Deleted');
+    await api.delete(`/auth/admin-mgmt/superadmin/${a.id}`); await load(); flash('Deleted');
   };
 
   const changePw = async (e: React.SyntheticEvent<HTMLFormElement>) => {
@@ -105,7 +105,7 @@ export default function SuperAdminsPage() {
     try {
       if (modal?.type === 'pw') await api.patch(`/auth/admin-mgmt/${modal.id}/password`, { password: pwForm.newPw });
       close(); flash('Password changed');
-    } catch (err: unknown) { setError((err as { response?: { data?: { error?: string } } })?.response?.data?.error || 'Failed'); }
+    } catch (err: unknown) { setError((err as { response?: { data?: { message?: string } } })?.response?.data?.message || 'Failed'); }
     finally { setLoading(false); }
   };
 

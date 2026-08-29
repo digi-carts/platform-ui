@@ -37,7 +37,7 @@ export default function DiscountsPage() {
   const [msg, setMsg] = useState('');
 
   const load = async () => {
-    try { const r = await api.get('/offers'); setOffers(r.data.offers || []); }
+    try { const r = await api.get('/offers'); setOffers(r.data || []); }
     catch { /* ignore */ }
   };
   useEffect(() => { load(); }, []);

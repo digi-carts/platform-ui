@@ -6,9 +6,9 @@ const _basePromise: Promise<string> =
   typeof window !== 'undefined'
     ? fetch('/api-url.txt')
         .then((r) => r.text())
-        .then((t) => t.trim() || 'http://localhost:4000/api')
-        .catch(() => process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api')
-    : Promise.resolve(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api');
+        .then((t) => (t.trim() || 'http://localhost:4000/api') + '/v1')
+        .catch(() => (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api') + '/v1')
+    : Promise.resolve((process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000/api') + '/v1');
 
 export const api = axios.create();
 
